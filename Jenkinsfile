@@ -30,4 +30,20 @@ pipeline {
 		}
 	}
 
+	post{
+		always{
+			echo "This always runs"
+		}
+
+		success{
+			echo "This only runs when this is script is success"
+		}
+
+		failure{
+			echo "This runs only when the script fails to run"
+		}
+		
+
+	}
+
 }
