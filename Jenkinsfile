@@ -1,15 +1,33 @@
-node {
+pipeline {
 
-	stage("Build"){
-		echo "Build stage"
-	}
+	agent any
 
-	stage("Testing stage"){
-		echo "Build stage"
-	}
+	stages{
 
-	stage("Integretion Test"){
-		echo "Integration tests running"
+		stage("Build"){
+			steps{
+				echo "This is the build stage" 
+			}
+		}
+
+		stage("Test"){
+			steps{
+				echo "This is the test stage" 
+			}
+		}
+
+		stage("QA"){
+			steps{
+				echo "This is the QA stage" 
+			}
+		}
+
+
+		stage("Production"){
+			steps{
+				echo "This is the production stage" 
+			}
+		}
 	}
 
 }
