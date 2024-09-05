@@ -33,6 +33,7 @@ pipeline {
 	post{
 		always{
 			echo "This always runs"
+			echo "This statement has been added after renovating the bash git script"
 		}
 
 		success{
