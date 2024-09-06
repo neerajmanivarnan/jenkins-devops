@@ -1,12 +1,12 @@
 pipeline {
 
-	agent {docker {image 'maven:3.6.3'}} 
+	agent any 
 
 	stages{
 
 		stage("Build"){
 			steps{
-				
+				sh 'docker ps'		
 				echo "This runs on ubuntu latest" 
 				echo "This is the build stage" 
 			}
