@@ -6,7 +6,7 @@ pipeline {
 
 		stage("Build"){
 			steps{
-				sh 'systemctl start docker'
+				sh 'docker ps'
 				echo "This runs on ubuntu latest" 
 				echo "This is the build stage" 
 			}
