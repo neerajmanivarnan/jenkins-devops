@@ -1,11 +1,13 @@
 pipeline {
 
-	agent any
+	agent {docker {image 'ubuntu:latest'}} 
 
 	stages{
 
 		stage("Build"){
 			steps{
+				
+				echo "This runs on ubuntu latest" 
 				echo "This is the build stage" 
 			}
 		}
