@@ -1,39 +1,34 @@
 pipeline {
 
-	agent any
+    agent any
 
-	stages{
+    stages {
 
-		stage("Build"){
-			steps{
-				
-				echo this is build stage
-			}
-		}
+        stage("Build") {
+            steps {
+                echo 'This is the Build stage'
+            }
+        }
 
-		stage("Test"){
-			steps{
-				
-				echo this is build stage
-			}
-		}
-		
-		stage("QA"){
-			steps{
-				
-				echo this is build stage
-			}
-		}
-		
-		stage("Prod"){
-			steps{
-				
-				echo this is build stage
-			}
-		}
+        stage("Test") {
+            steps {
+                echo 'This is the Test stage'
+            }
+        }
 
+        stage("QA") {
+            steps {
+                echo 'This is the QA stage'
+            }
+        }
 
+        stage("Prod") {
+            steps {
+                echo 'This is the Prod stage'
+            }
+        }
 
-	}
+    }
 
 }
+
