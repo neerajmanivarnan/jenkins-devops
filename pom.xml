@@ -120,6 +120,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+    			<groupId>org.codehaus.groovy</groupId>
+    			<artifactId>groovy</artifactId>
+    			<version>3.0.9</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.sonarsource.java</groupId>
 			<artifactId>sonar-jacoco-listeners</artifactId>
 			<version>${jacoco-listeners.version}</version>
