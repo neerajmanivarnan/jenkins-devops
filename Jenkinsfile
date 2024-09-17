@@ -1,18 +1,39 @@
 pipeline {
 
-	stage("Build"){
-		echo "this is build"	
-	}
+	agent any
 
-	stage("Test"){
-		echo "this is build"	
-	}
+	stages{
 
-	stage("Integrating"){
-		echo "this is build"	
-	}
-	stage("Prod"){
-		echo "this is build"	
+		stage("Build"){
+			steps{
+				
+				echo this is build stage
+			}
+		}
+
+		stage("Test"){
+			steps{
+				
+				echo this is build stage
+			}
+		}
+		
+		stage("QA"){
+			steps{
+				
+				echo this is build stage
+			}
+		}
+		
+		stage("Prod"){
+			steps{
+				
+				echo this is build stage
+			}
+		}
+
+
+
 	}
 
 }
