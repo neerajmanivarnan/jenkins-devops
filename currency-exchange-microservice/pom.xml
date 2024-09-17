@@ -25,22 +25,17 @@
 		<java.version>1.8</java.version>
 		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 		<spring-cloud.version>Greenwich.SR3</spring-cloud.version>
-
 		<surefire.version>2.22.1</surefire.version>
 		<failsafe.version>2.22.1</failsafe.version>
-
 		<jacoco.version>0.8.3</jacoco.version>
 		<jacoco.path>${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar</jacoco.path>
 		<jacoco.utReport>${project.build.directory}/jacoco.exec</jacoco.utReport>
 		<jacoco.itReport>${project.build.directory}/jacoco-it.exec</jacoco.itReport>
 		<jacoco.utAgentConfig>-javaagent:${jacoco.path}=destfile=${jacoco.utReport}</jacoco.utAgentConfig>
 		<jacoco.itAgentConfig>-javaagent:${jacoco.path}=destfile=${jacoco.itReport}</jacoco.itAgentConfig>
-
-		<jacoco-listeners.version>5.10.2.17019</jacoco-listeners.version>
 	</properties>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -87,11 +82,18 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 		<!-- Add ons -->
 		<dependency>
 			<groupId>io.rest-assured</groupId>
-			<artifactId>rest-assured-all</artifactId>
-			<version>4.0.0</version>
+			<artifactId>rest-assured</artifactId>
+			<version>4.1.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>4.2.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -102,14 +104,8 @@
 		</dependency>
 		<dependency>
 			<groupId>io.cucumber</groupId>
-			<artifactId>cucumber-java</artifactId>
-			<version>2.3.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-junit</artifactId>
-			<version>2.3.1</version>
+			<version>4.2.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -120,20 +116,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.sonarsource.java</groupId>
-			<artifactId>sonar-jacoco-listeners</artifactId>
-			<version>${jacoco-listeners.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>rest-assured</artifactId>
-			<version>4.1.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -162,19 +146,11 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${surefire.version}</version>
 				<configuration>
-					<!-- JDK 7 - relax bytecode verifier to prevent double -->
-					<!-- instrumentation issues with OpenJPA tests and JaCoCo -->
-					<!-- <argLine>-XX:-UseSplitVerifier ${jacoco.utAgentConfig}</argLine> -->
-					<!-- JDK 8 - bytecode verifier cannot be relaxed or disabled -->
-					<!-- to prevent runtime errors, OpenJPA tests are ignored -->
 					<argLine>${jacoco.utAgentConfig}</argLine>
 					<excludes>
-						<!--<exclude>**/*ApplicationTests.java</exclude> -->
 						<exclude>**/RunCucumberIntegrationTestCase.java</exclude>
 					</excludes>
 					<properties>
-						<!-- add SonarQube's JaCoCo listener to enable -->
-						<!-- gathering of code coverage metrics per test -->
 						<property>
 							<name>listener</name>
 							<value>org.sonar.java.jacoco.JUnitListener</value>
@@ -187,72 +163,69 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>${failsafe.version}</version>
 				<configuration>
-					<!-- JaCoCo must be enabled on target app container -->
-					<!--<argLine>${jacoco.itAgentConfig}</argLine> -->
 					<includes>
-						<!--<include>**/*ApplicationTests.java</include> -->
 						<include>**/*CucumberIntegrationTestCase.java</include>
 					</includes>
 				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
-			<!-- Docker -->
-			<!--<plugin> -->
-			<!--<groupId>com.spotify</groupId> -->
-			<!--<artifactId>dockerfile-maven-plugin</artifactId> -->
-			<!--<version>1.4.6</version> -->
-			<!--<executions> -->
-			<!--<execution> -->
-			<!--<id>default</id> -->
-			<!--<goals> -->
-			<!--<goal>build</goal> -->
-			<!--<goal>push</goal> -->
-			<!--</goals> -->
-			<!--</execution> -->
-			<!--</executions> -->
-			<!--<configuration> -->
-			<!--<repository>in28min/${project.name}</repository> -->
-			<!--<tag>${project.version}</tag> -->
-			<!--&lt;!&ndash;<skipDockerInfo>true</skipDockerInfo>&ndash;&gt; -->
-			<!--</configuration> -->
-			<!--</plugin> -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Uncomment and configure Docker plugin if needed -->
+			<!--
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.33.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			-->
 		</plugins>
 	</build>
 
-	<repositories>
-		<repository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+	<profiles>
+		<profile>
+			<id>docker</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>0.33.0</version>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
+
